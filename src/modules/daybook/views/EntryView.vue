@@ -16,14 +16,14 @@
     <div class="d-flex flex-column px-3 h-75">
       <textarea v-model="entry.text" placeholder="What happened today?"></textarea>
     </div>
-    <Fab icon="far fa-save"/>
+    <Fab @on:click="saveEntry" icon="far fa-save"/>
     <img src="https://cdn.pixabay.com/photo/2021/11/02/10/46/cat-6762936_960_720.jpg" class="img-thumbnail" alt="entry-picture" />
   </template>
 </template>
 
 <script>
 import { defineAsyncComponent } from 'vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 import getDayMonthYear from '../helpers/getDayMonthYear'
 
@@ -45,10 +45,30 @@ export default {
   },
   methods: {
     loadEntry() {
-      const entry = this.getEntryById(this.id)
-      if(!entry) return this.$router.push({name: 'no-entry'})
+
+      let entry;
+
+      if(this.id === 'new') {
+        entry = {
+          text: '',
+          date: new Date().getTime()
+        }
+      } else {
+        entry = this.getEntryById(this.id)
+        if(!entry) return this.$router.push({name: 'no-entry'})
+      }
+
       this.entry = entry
-    }
+    },
+   async saveEntry(){
+
+      if(this.entry.id){
+        await this.updateEntry(this.entry)
+      } else {
+        console.log('create new entry')
+      }
+    },
+    ...mapActions('journal', ['updateEntry'])
   },
   computed: {
     ...mapGetters('journal',['getEntryById']),
