@@ -4,7 +4,7 @@
             <input v-model="searchTerm" type="text" class="form-control" placeholder="Search entry"/>
         </div>
         <div class="mt-2 d-flex flex-column">
-            <button @click="$router.push({name: 'entry', params: {id: 'new'} })" class="btn btn-primary mx-3">
+            <button @click="$router.push({name: 'entry', params: {id: 'new'} })" class="btn btn-primary mx-3 mb-3 mt-2">
                 <i class="fa fa-plus-circle"></i>
                    New entry
             </button>

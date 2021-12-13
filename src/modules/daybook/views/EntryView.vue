@@ -7,7 +7,7 @@
         <span class="fs-4 mx-2 fw-light ">{{yearDay}}</span>
       </div>
       <div>
-        <button class="btn btn-danger">Delete <i class="fa fa-trash-alt"></i></button>
+        <button v-if="entry.id" @click="onDeleteEntry" class="btn btn-danger">Delete <i class="fa fa-trash-alt"></i></button>
         <button class="btn btn-primary mx-2">Upload photo <i class="fa fa-upload"></i></button>
         <button class="btn btn-"></button>
       </div>
@@ -23,6 +23,7 @@
 
 <script>
 import { defineAsyncComponent } from 'vue'
+import Swal from 'sweetalert2'
 import { mapGetters, mapActions } from 'vuex'
 
 import getDayMonthYear from '../helpers/getDayMonthYear'
@@ -60,15 +61,41 @@ export default {
 
       this.entry = entry
     },
-   async saveEntry(){
+    async saveEntry(){
+
+      new Swal({
+        title: 'Saving...',
+        allowOutsideClick: false
+      })
+
+      Swal.showLoading()
 
       if(this.entry.id){
         await this.updateEntry(this.entry)
       } else {
-        console.log('create new entry')
+        const id = await this.createEntry(this.entry)
+        this.$router.push({name: 'entry', params: { id }})
       }
+
+      Swal.fire('Saved!', '', 'success')
     },
-    ...mapActions('journal', ['updateEntry'])
+    async onDeleteEntry(){
+      const { isConfirmed } =  await new Swal({
+        title: 'Are you sure?',
+        showDenyButton: true,
+        denyButtonText: 'Cancel',
+        confirmButtonText: "Yes, delete it!",
+      })
+
+      if(!isConfirmed) return
+      Swal.showLoading()
+
+      await this.deleteEntry(this.entry.id)
+      this.$router.push({name: 'no-entry'})
+
+      Swal.fire('Deleted!', '', 'success')
+    },
+    ...mapActions('journal', ['updateEntry', 'createEntry', 'deleteEntry'])
   },
   computed: {
     ...mapGetters('journal',['getEntryById']),
