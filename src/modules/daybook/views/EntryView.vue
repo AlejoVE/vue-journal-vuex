@@ -7,8 +7,9 @@
         <span class="fs-4 mx-2 fw-light ">{{yearDay}}</span>
       </div>
       <div>
+        <input type="file" @change="onSelectedImage" ref="imageSelector" v-show="false" accept="image/png, image/jpg, image/jpeg"/>
         <button v-if="entry.id" @click="onDeleteEntry" class="btn btn-danger">Delete <i class="fa fa-trash-alt"></i></button>
-        <button class="btn btn-primary mx-2">Upload photo <i class="fa fa-upload"></i></button>
+        <button @click="onSelectImage" class="btn btn-primary mx-2">Upload photo <i class="fa fa-upload"></i></button>
         <button class="btn btn-"></button>
       </div>
     </div>
@@ -17,7 +18,8 @@
       <textarea v-model="entry.text" placeholder="What happened today?"></textarea>
     </div>
     <Fab @on:click="saveEntry" icon="far fa-save"/>
-    <img src="https://cdn.pixabay.com/photo/2021/11/02/10/46/cat-6762936_960_720.jpg" class="img-thumbnail" alt="entry-picture" />
+    <!-- <img src="https://cdn.pixabay.com/photo/2021/11/02/10/46/cat-6762936_960_720.jpg" class="img-thumbnail" alt="entry-picture" /> -->
+    <img v-if="localImage" :src="localImage" class="img-thumbnail" alt="entry-picture" />
   </template>
 </template>
 
@@ -41,7 +43,9 @@ export default {
 
   data(){
     return {
-      entry: null
+      entry: null,
+      localImage: null,
+      file: null
     }
   },
   methods: {
@@ -94,6 +98,22 @@ export default {
       this.$router.push({name: 'no-entry'})
 
       Swal.fire('Deleted!', '', 'success')
+    },
+
+    onSelectedImage(event){
+      const file = event.target.files[0]
+      if(!file) {
+        this.localImage = null
+        this.file = null
+        return
+      }
+      this.file = file
+      const fr = new FileReader()
+      fr.onload = () => this.localImage = fr.result
+      fr.readAsDataURL(file)
+    },
+    onSelectImage(){
+      this.$refs.imageSelector.click()
     },
     ...mapActions('journal', ['updateEntry', 'createEntry', 'deleteEntry'])
   },
