@@ -18,7 +18,7 @@
       <textarea v-model="entry.text" placeholder="What happened today?"></textarea>
     </div>
     <Fab @on:click="saveEntry" icon="far fa-save"/>
-    <!-- <img src="https://cdn.pixabay.com/photo/2021/11/02/10/46/cat-6762936_960_720.jpg" class="img-thumbnail" alt="entry-picture" /> -->
+    <img v-if='entry.picture && !localImage' :src="entry.picture" />
     <img v-if="localImage" :src="localImage" class="img-thumbnail" alt="entry-picture" />
   </template>
 </template>
@@ -27,6 +27,7 @@
 import { defineAsyncComponent } from 'vue'
 import Swal from 'sweetalert2'
 import { mapGetters, mapActions } from 'vuex'
+import uploadImage from '../helpers/uploadImage'
 
 import getDayMonthYear from '../helpers/getDayMonthYear'
 
@@ -73,6 +74,11 @@ export default {
       })
 
       Swal.showLoading()
+
+      if(this.file) {
+        const picture = await uploadImage(this.file)
+        this.entry.picture = picture
+      }
 
       if(this.entry.id){
         await this.updateEntry(this.entry)
@@ -138,6 +144,8 @@ export default {
   watch: {
     id(){
       this.loadEntry()
+      this.file = null
+      this.localImage = null
     }
   }
 }
