@@ -43,7 +43,8 @@ export const updateEntry = async ({commit}, entry) => {
         const {text, date, picture} = entry
         const dataToSave = {text, date, picture}
         await journalApi.put(`/entries/${entry.id}.json`, dataToSave)
-        commit("updateEntry", {...entry})
+        dataToSave.id = entry.id
+        commit("updateEntry", {...dataToSave})
     } catch (error) {
         console.log('ERROR ACTION: updateEntry', error)
     }
