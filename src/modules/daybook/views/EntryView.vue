@@ -69,7 +69,7 @@ export default {
     },
     async saveEntry(){
 
-      new Swal({
+      Swal.fire({
         title: 'Saving...',
         allowOutsideClick: false
       })
@@ -91,7 +91,7 @@ export default {
       Swal.fire('Saved!', '', 'success')
     },
     async onDeleteEntry(){
-      const { isConfirmed } =  await new Swal({
+      const { isConfirmed } =  await Swal.fire({
         title: 'Are you sure?',
         showDenyButton: true,
         denyButtonText: 'Cancel',
