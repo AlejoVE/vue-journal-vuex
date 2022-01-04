@@ -21,3 +21,7 @@ export const deleteEntry =  (state, id) => {
     // state.entries.unshift(entry)
     state.entries = state.entries.filter(entry => entry.id !== id)
 }
+
+export const clearEntries =  (state) => {
+    state.entries = []
+}
