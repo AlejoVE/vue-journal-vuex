@@ -52,7 +52,6 @@ export const updateEntry = async ({commit}, entry) => {
 
 export const deleteEntry = async ({commit}, id) => {
     try {
-        console.log('deleteEntry', id)
         await journalApi.delete(`/entries/${id}.json`)
         commit("deleteEntry", id)
     } catch (error) {

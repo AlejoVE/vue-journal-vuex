@@ -24,8 +24,8 @@ export default {
         return {
             username,
             onLogout(){
-                router.push({ name: 'login' })
                 logout()
+                router.push({ name: 'login' })
             }
         }
 

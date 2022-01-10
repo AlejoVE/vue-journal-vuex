@@ -11,7 +11,7 @@ const useAuth = () => {
      }
 
      const loginUser = async (user) => {
-         const res = await store.dispatch('auth/singInUser', user)
+         const res = await store.dispatch('auth/signInUser', user)
          return res
      }
 

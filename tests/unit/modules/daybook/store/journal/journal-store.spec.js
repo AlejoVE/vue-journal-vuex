@@ -2,6 +2,8 @@ import { createStore } from "vuex"
 import journal from '@/modules/daybook/store/journal'
 import journalState from "../../../../mocks-data/test-journal-state"
 
+import authApi from '@/api/authApi'
+
 const createVuexStore = (initialState) =>(
         createStore({
             modules: {
@@ -15,6 +17,12 @@ const createVuexStore = (initialState) =>(
 
 
 describe('Vuex - Test in Journal Module', () => {
+
+    // Firebase authentication
+    beforeAll( async () => {
+        const { data } = await authApi.post(':signInWithPassword', { email: 'test@gmail.com', password: '123456', returnSecureToken: true })
+        localStorage.setItem('idToken', data.idToken)
+    })
 
     // Basics =================
     test('should have initial state', () => {

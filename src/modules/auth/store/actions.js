@@ -2,7 +2,6 @@ import authApi from '@/api/authApi'
 
 
 export const createUser =  async ({commit}, user) => {
-
     const { name, email, password } = user
 
     try {
@@ -18,22 +17,19 @@ export const createUser =  async ({commit}, user) => {
         return { ok: true }
 
     } catch (error) {
-        console.log(error)
         return {ok: false, message: error.response.data.error.message}
     }
 }
 
-export const singInUser =  async ({ commit }, user) => {
-
+export const signInUser =  async ({ commit }, user) => {
     const { email, password } = user
 
     try {
         const { data } = await authApi.post(':signInWithPassword', { email, password, returnSecureToken: true })
         const { idToken, refreshToken, displayName } = data
 
-        user.name = displayName
-        delete user.password
-        commit('loginUser', { user, idToken, refreshToken })
+        const payload = { email, name: displayName}
+        commit('loginUser', { payload, idToken, refreshToken })
 
         return { ok: true }
 
